@@ -198,9 +198,9 @@
                 <div class="card" style="margin-bottom: 15px;">
                   <img src="{{i.foto_menu}}" class="card-img-top" style=" width: 100%; height: 300px; object-fit: cover;" alt="...">
                   <div class="card-body">
-                    <a href="#">
+                    <a href="/area/{{i.tenant.location.id}}">
                     <span style="font-size: 12px; color: #54595F; text-transform: uppercase;"><i class="fas fa-map-marker-alt"></i> {{i.tenant.location.nama_location}}</span></a><br>
-                    <a href="#" style="font-size: 14px; color: #FF5950; font-weight: normal;"> {{i.tenant.nama_toko}}</a><br>
+                    <a href="/mitra/{{i.tenant.id}}" style="font-size: 14px; color: #FF5950; font-weight: normal;"> {{i.tenant.nama_toko}}</a><br>
                     <h3><a href="#" style="color: black; font-weight: bold;">{{i.nama_menu}}</a></h3>
                     
                     <span style="font-size: 16px;">Rp. {{i.harga_menu}}</span>

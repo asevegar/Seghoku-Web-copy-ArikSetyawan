@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Seghoku - {{mitra}}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:300,400,700,800|Open+Sans:300,400,700" rel="stylesheet">
+
+    <!-- {{url_for('static',filename='')}} -->
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/animate.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/owl.carousel.min.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/aos.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-datepicker.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/jquery.timepicker.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static',filename='fonts/ionicons/css/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='fonts/fontawesome/css/font-awesome.min.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static',filename='fonts/flaticon/font/flaticon.css')}}">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+
+  </head>
+  <body class="bg-light">
+
+    <body data-spy="scroll" data-target="#ftco-navbar-spy" data-offset="0">
+
+    <div class="site-wrap">
+      
+      <nav class="site-menu" id="ftco-navbar-spy">
+        <div class="site-menu-inner" id="ftco-navbar">
+          <ul class="list-unstyled">
+            <li><a href="#section-home">Home</a></li>
+            <li><a href="#section-menu">Our Menu</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <header class="site-header">
+        <div class="row align-items-center">
+          <div class="col-5 col-md-3">
+             
+          </div>
+          <div class="col-2 col-md-6 text-center site-logo-wrap">
+            <a href="/" class="site-logo">S</a>
+          </div>
+          <div class="col-5 col-md-3 text-right menu-burger-wrap">
+            <a href="#" class="site-nav-toggle js-site-nav-toggle"><i></i></a>
+
+          </div>
+        </div>
+       
+      </header> <!-- site-header -->
+      
+      <div class="main-wrap " id="section-home">
+
+        <div class="cover_1 overlay bg-light">
+          <div class="img_bg" style="background-image: url(../static/images/slider-1.jpg);" data-stellar-background-ratio="0.5">
+            <div class="container">
+              <div class="row align-items-center justify-content-center text-center">
+                <div class="col-md-10" data-aos="fade-up">
+                  <h2 class="heading mb-5">Welcome to Seghoku</h2>
+                  <p><a href="#section-menu" class="smoothscroll btn btn-outline-white px-5 py-3">Order A Meal</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- .cover_1 -->
+
+        <div class="section bg-light" id="section-menu" data-aos="fade-up">
+          <div class="container">
+            <div class="row section-heading justify-content-center mb-5">
+              <div class="col-md-8 text-center">
+                <h2 class="heading mb-3">Menu</h2>
+                <span>{{mitra}}</span>
+                <p class="sub-heading mb-5"></p>  
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              {% for i in data_menu %}
+              <div class="col-md-4">
+                <div class="card" style="margin-bottom: 15px;">
+                  <img src="{{i.foto_menu}}" class="card-img-top" style=" width: 100%; height: 300px; object-fit: cover;" alt="...">
+                  <div class="card-body">
+                    <a href="/area/{{i.tenant.location.id}}">
+                    <span style="font-size: 12px; color: #54595F; text-transform: uppercase;"><i class="fas fa-map-marker-alt"></i> {{i.tenant.location.nama_location}}</span></a><br>
+                    <a href="/mitra/{{i.tenant.id}}" style="font-size: 14px; color: #FF5950; font-weight: normal;"> {{i.tenant.nama_toko}}</a><br>
+                    <h3><a href="#" style="color: black; font-weight: bold;">{{i.nama_menu}}</a></h3>
+                    
+                    <span style="font-size: 16px;">Rp. {{i.harga_menu}}</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              
+            </div>
+          </div>
+        </div> <!-- .section -->
+
+        <footer class="ftco-footer">
+          <div class="container">
+            
+            <div class="row">
+              <div class="col-md-4">
+                <div class="footer-widget">
+                  <h3 class="mb-4">Contact Us:</h3>
+                  <p>General : setyawanarik@gmal.com</p>
+                  <p>Jl. Raya Semambung No.409 Dusun Semambung, Driyorejo Kec. Driyorejo Kabupaten Gresik Jawa Timur 61177</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row pt-5">
+              <div class="col-md-12 text-center">
+                <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+              </div>
+            </div>
+          </div>
+        </footer>
+      
+    </div>
+
+    <!-- loader -->
+    <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#ff7a5c"/></svg></div>
+
+    <script src="{{url_for('static',filename='js/jquery-3.2.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery-migrate-3.0.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/popper.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.waypoints.min.js')}}"></script>
+
+    <script src="{{url_for('static',filename='js/bootstrap-datepicker.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.timepicker.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.stellar.min.js')}}"></script>
+
+    <script src="{{url_for('static',filename='js/jquery.easing.1.3.js')}}"></script>    
+
+    <script src="{{url_for('static',filename='js/aos.js')}}"></script>
+
+    <script src="{{url_for('static',filename='js/main.js')}}"></script>
+  </body>
+</html>
