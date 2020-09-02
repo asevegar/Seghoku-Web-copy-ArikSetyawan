@@ -13,7 +13,7 @@ def index():
     data_menu = []
 
     # request menu
-    url_menu = "http://127.0.0.1:5000/api/menu/"
+    url_menu = "https://seghoku-api.herokuapp.com//api/menu/"
     req_menu = requests.get(url_menu)
     req_menu = req_menu.json()['data']
 
@@ -22,11 +22,11 @@ def index():
         data['id'] = sToken.dumps(i['id'], salt="id_menu"),
         data['nama_menu'] = i['nama_menu']
         data['harga_menu'] = i['harga_menu']
-        data['foto_menu'] = "http://127.0.0.1:5000/api/files/?filename={}".format(
+        data['foto_menu'] = "https://seghoku-api.herokuapp.com//api/files/?filename={}".format(
             i['foto_menu'])
 
         # get tenant
-        url_tenant = "http://127.0.0.1:5000/api/tenant/"
+        url_tenant = "https://seghoku-api.herokuapp.com//api/tenant/"
         req_tenant = requests.get(
             url_tenant, params={'id_tenant': i['id_tenant']})
         req_tenant = req_tenant.json()['data']
@@ -37,7 +37,7 @@ def index():
         tenant['no_hp'] = req_tenant['no_hp']
 
         # get location
-        url_location = "http://127.0.0.1:5000/api/locations/"
+        url_location = "https://seghoku-api.herokuapp.com//api/locations/"
         req_location = requests.get(
             url_location, params={'id_location': req_tenant['id_location']})
         req_location = req_location.json()['data']
@@ -60,7 +60,7 @@ def area(place):
         place = sToken.loads(place, salt="id_location", max_age=3600)
         data_menu = []
         # Get location
-        url_location = "http://127.0.0.1:5000/api/locations/"
+        url_location = "https://seghoku-api.herokuapp.com//api/locations/"
         req_location = requests.get(
             url_location, params={'id_location': place})
         req_location = req_location.json()
@@ -76,7 +76,7 @@ def area(place):
             }
 
             # get tenant by location
-            url_tenant = "http://127.0.0.1:5000/api/tenant/"
+            url_tenant = "https://seghoku-api.herokuapp.com//api/tenant/"
             req_tenant = requests.get(
                 url_tenant, params={'id_location': req_location['id']})
             req_tenant = req_tenant.json()['data']
@@ -88,7 +88,7 @@ def area(place):
                     "location": location
                 }
                 # get menu by tenant
-                url_menu = "http://127.0.0.1:5000/api/menu/"
+                url_menu = "https://seghoku-api.herokuapp.com//api/menu/"
                 req_menu = requests.get(
                     url_menu, params={"id_tenant": i['id']})
                 req_menu = req_menu.json()['data']
@@ -98,7 +98,7 @@ def area(place):
                     data['id'] = sToken.dumps(j['id'],salt='id_menu'),
                     data['nama_menu'] = j['nama_menu']
                     data['harga_menu'] = j['harga_menu']
-                    data['foto_menu'] = "http://127.0.0.1:5000/api/files/?filename={}".format(
+                    data['foto_menu'] = "https://seghoku-api.herokuapp.com//api/files/?filename={}".format(
                         j['foto_menu'])
                     data_menu.append(data)
             # return jsonify(data_menu)
@@ -116,7 +116,7 @@ def mitra(id_tenant):
         data_menu = []
 
         # get tenant
-        url_tenant = "http://127.0.0.1:5000/api/tenant/"
+        url_tenant = "https://seghoku-api.herokuapp.com//api/tenant/"
         req_tenant = requests.get(url_tenant, params={'id_tenant': id_tenant})
         req_tenant = req_tenant.json()
         if req_tenant['status'] == "error":
@@ -130,7 +130,7 @@ def mitra(id_tenant):
             }
 
             # get location
-            url_location = "http://127.0.0.1:5000/api/locations/"
+            url_location = "https://seghoku-api.herokuapp.com//api/locations/"
             req_location = requests.get(
                 url_location, params={'id_location': req_tenant['id_location']})
             req_location = req_location.json()['data']
@@ -142,7 +142,7 @@ def mitra(id_tenant):
             tenant['location'] = location
 
             # get menu by tenant
-            url_menu = "http://127.0.0.1:5000/api/menu/"
+            url_menu = "https://seghoku-api.herokuapp.com//api/menu/"
             req_menu = requests.get(
                 url_menu, params={"id_tenant": req_tenant['id']})
             req_menu = req_menu.json()['data']
@@ -152,7 +152,7 @@ def mitra(id_tenant):
                 data['id'] = sToken.dumps(j['id'],salt="id_menu"),
                 data['nama_menu'] = j['nama_menu']
                 data['harga_menu'] = j['harga_menu']
-                data['foto_menu'] = "http://127.0.0.1:5000/api/files/?filename={}".format(
+                data['foto_menu'] = "https://seghoku-api.herokuapp.com//api/files/?filename={}".format(
                     j['foto_menu'])
                 data_menu.append(data)
 
