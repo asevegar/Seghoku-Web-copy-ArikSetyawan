@@ -40,6 +40,11 @@
           <ul class="list-unstyled">
             <li><a href="#section-home">Home</a></li>
             <li><a href="#section-menu">Our Menu</a></li>
+            {% if 'islogin' not in session %}
+            <li><a href="/login">Login</a></li>
+            {% else %}
+            <li><a href="/logout">Logout</a></li>
+            {% endif %}
           </ul>
         </div>
       </nav>
