@@ -43,6 +43,9 @@
             {% if 'islogin' not in session %}
             <li><a href="/login">Login</a></li>
             {% else %}
+            {% if 'admin' in session %}
+            <li><a href="/dashboard">Dashboard</a></li>
+            {% endif %}
             <li><a href="/logout">Logout</a></li>
             {% endif %}
           </ul>
