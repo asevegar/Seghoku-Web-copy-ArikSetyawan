@@ -48,6 +48,7 @@
             {% if 'admin' in session %}
             <li><a href="/dashboard">Dashboard</a></li>
             {% endif %}
+            <li><a href="/cart">Cart</a></li>
             <li><a href="/logout">Logout</a></li>
             {% endif %}
           </ul>
@@ -90,6 +91,15 @@
             <div class="row section-heading justify-content-center mb-5">
               <div class="col-md-8 text-center">
                 <h2 class="heading mb-3">Find your best food</h2>
+                <form action="/search">
+                  <div class="input-group rounded">
+                    <input type="search" class="form-control rounded" placeholder="Search" name="keyword" aria-label="Search"
+                      aria-describedby="search-addon" />
+                    <span class="input-group-text border-0" id="search-addon">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </div>
+                </form>
                 <p class="sub-heading mb-5"></p>  
               </div>
             </div>
@@ -209,7 +219,7 @@
                     <a href="/area/{{i.tenant.location.id}}">
                     <span style="font-size: 12px; color: #54595F; text-transform: uppercase;"><i class="fas fa-map-marker-alt"></i> {{i.tenant.location.nama_location}}</span></a><br>
                     <a href="/mitra/{{i.tenant.id}}" style="font-size: 14px; color: #FF5950; font-weight: normal;"> {{i.tenant.nama_toko}}</a><br>
-                    <h3><a href="#" style="color: black; font-weight: bold;">{{i.nama_menu}}</a></h3>
+                    <h3><a href="#" data-toggle="modal" data-target="#beli_menu{{loop.index}}" style="color: black; font-weight: bold;">{{i.nama_menu}}</a></h3>
                     
                     <span style="font-size: 16px;">Rp. {{i.harga_menu}}</span>
                   </div>
@@ -297,6 +307,36 @@
       
     </div>
 
+    <!-- Modal -->
+    {% for data in data_menu %}
+    <div class="modal fade" id="beli_menu{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Beli {{data.nama_menu}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="needs-validation" novalidate="" method="POST" action="/add_cart/{{data.id}}" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" class="form-control" required name="quantity" min="20">
+                <div class="invalid-feedback">
+                  *Minimum: 20
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
     <!-- loader -->
     <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#ff7a5c"/></svg></div>
 
@@ -316,5 +356,6 @@
     <script src="{{url_for('static',filename='js/aos.js')}}"></script>
 
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
+    <script src="{{url_for('static',filename='stisla/js/scripts.js')}}"></script>
   </body>
 </html>

@@ -1,14 +1,21 @@
 from flask import Flask, flash, render_template, redirect, url_for, jsonify, session, request
 from itsdangerous import URLSafeTimedSerializer, BadData, SignatureExpired
 from PIL import Image
-import requests, random, timeit, io
+import requests, random, timeit, io, os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# ENV_VARIABLE
+API_URL = os.getenv('API_URL')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'thisissecret'
+app.config['SECRET_KEY'] = SECRET_KEY
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-sToken = URLSafeTimedSerializer('thisissecret')
+sToken = URLSafeTimedSerializer(SECRET_KEY)
 
 # Custom Function
 def islogin():
@@ -30,13 +37,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # API URL
-url_menu = "http://127.0.0.1:5000/api/menu/"
-url_tenant = "http://127.0.0.1:5000/api/tenant/"
-url_location = "http://127.0.0.1:5000/api/locations/"
-url_auth = "http://127.0.0.1:5000/api/auth/"
-url_user = "http://127.0.0.1:5000/api/users/"
-url_level_user = "http://127.0.0.1:5000/api/level_user/"
-
+url_menu = "{}/api/menu/".format(API_URL)
+url_tenant = "{}/api/tenant/".format(API_URL)
+url_location = "{}/api/locations/".format(API_URL)
+url_auth = "{}/api/auth/".format(API_URL)
+url_user = "{}/api/users/".format(API_URL)
+url_level_user = "{}/api/level_user/".format(API_URL)
+url_cart = "{}/api/cart/".format(API_URL)
+url_checkout = "{}/api/checkout/".format(API_URL)
 
 
 @app.route('/')
@@ -74,6 +82,41 @@ def index():
         data_menu.append(data)
     # return jsonify(data_menu)
     return render_template("index.html", data_menu=data_menu)
+
+
+@app.route('/search')
+def search():
+    keyword = request.args.get('keyword')
+    req_menu = requests.get(url_menu,params={'qkeyword':keyword})
+    req_menu = req_menu.json()['data']
+
+    # Shuffle data
+    req_menu = random.sample(req_menu,len(req_menu))
+    data_menu = []
+    for i in req_menu:
+        data = {}
+        data['id'] = sToken.dumps(i['id'], salt="id_menu")
+        data['nama_menu'] = i['nama_menu']
+        data['harga_menu'] = i['harga_menu']
+        data['foto_menu'] = i['foto_menu']
+
+        # get tenant
+        tenant = {}
+        tenant['id'] = sToken.dumps(i["tenant"]['id'], salt="id_tenant")
+        tenant['nama_toko'] = i["tenant"]['nama_toko']
+        tenant['no_hp'] = i["tenant"]['no_hp']
+
+        # get location
+        location = {}
+        location['id'] = sToken.dumps(i["tenant"]["location"]['id'], salt="id_location")
+        location['nama_location'] = i["tenant"]["location"]['nama_location']
+
+        tenant['location'] = location
+        data['tenant'] = tenant
+
+        data_menu.append(data)
+    # return jsonify(data_menu)
+    return render_template("search.html", data_menu=data_menu, keyword=keyword)
 
 
 @app.route('/area/<place>')
@@ -178,8 +221,8 @@ def login():
             if req.status_code == 200:
                 res = req.json()
                 if res['status'] == 'success':
-                    session['islogin'] = True,
-                    session['id_user'] = res['data']['id'],
+                    session['islogin'] = True
+                    session['id_user'] = res['data']['id']
                     session['nama_user'] = res['data']['nama'].capitalize()
 
                     id_level = res['data']['id_level']
@@ -197,7 +240,7 @@ def login():
                         session['regular'] = True
                         return redirect(url_for('index'))
 
-                return redirect(url_user("login"))
+                return redirect(url_for("login"))
             return redirect(url_for('login'))
 
 
@@ -264,6 +307,13 @@ def joinparter():
                     return redirect(url_for('joinparter'))
             else:
                 return redirect(url_for('joinparter'))
+
+@app.route('/profile')
+def profile():
+    if islogin():
+        return render_template('profile.html')
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/dashboard')
@@ -426,6 +476,122 @@ def remove_menu(id_menu):
         else:
             flash("Opps Server Error","error")
             return redirect(url_for('dashboard_menu'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/cart')
+def cart():
+    if islogin():
+        data_cart = []
+        req = requests.get(url_cart,params={"id_user":session['id_user']})
+        res = req.json()
+        for i in res['data']['data_cart']:
+            data = {}
+            data['id'] = sToken.dumps(i['id'],salt='id_cart')
+            data['id_menu'] = sToken.dumps(i['id_menu'],salt='id_menu')
+            data['id_user'] = sToken.dumps(i['id_user'],salt='id_user')
+
+            menu = {}
+            menu['id'] = sToken.dumps(i['menu']['id'], salt='id_menu')
+            menu['id_tenant'] = sToken.dumps(i['menu']['id_tenant'], salt='id_tenant')
+            menu['nama_menu'] = i['menu']['nama_menu']
+            menu['harga_menu'] = i['menu']['harga_menu']
+            menu['photo']=i['menu']['photo']
+            data['menu'] = menu
+            data['quantity'] = i['quantity']
+            data['total_harga'] = i['total_harga']
+            data_cart.append(data)
+
+        data_send = {"data_cart":data_cart,"grand_prize":res['data']['grand_prize']}
+
+        # return jsonify(data_send)
+        qty = len(res['data']['data_cart'])
+        return render_template("cart.html",data_cart = data_send,qty=qty)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/add_cart/<id_menu>',methods=['POST'])
+def add_cart(id_menu):
+    if islogin():
+        id_menu = sToken.loads(id_menu, salt='id_menu', max_age=3600)
+        quantity = request.form['quantity']
+        json = {"id_user":session['id_user'],"id_menu":id_menu,"quantity":quantity}
+        req = requests.post(url_cart,json=json)
+        if req.status_code == 200:
+            res = req.json()
+            if res['status'] == "success":
+                flash("Addded to cart","success")
+                return redirect(url_for("index"))
+            else:
+                flash("Opps Something Wrong",'error')
+                return redirect(url_for('index'))
+        else:
+            flash("Opps Server Error", "error")
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/remove_cart/<id_cart>')
+def remove_cart(id_cart):
+    if islogin():
+        id_cart = sToken.loads(id_cart, salt='id_cart', max_age=3600)
+
+        # cek cart 
+        cek_cart = requests.get(url_cart,params={'id_cart':id_cart})
+        if cek_cart.status_code == 200:
+            cek_cart = cek_cart.json()
+            if cek_cart['status'] == 'success' and cek_cart['data']['id_user'] == session['id_user']:
+                # remove cart
+                remove_cart = requests.delete(url_cart, params={'id_cart':id_cart})
+                flash("Cart Deleted","success")
+                return redirect(url_for('cart'))
+            else:
+                flash("Opps Something Wrong!", "error")
+                return redirect(url_for('cart'))
+        else:
+            flash("Opps Server Error!","error")
+            return redirect(url_for('cart'))
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/edit_cart/<id_cart>',methods=['POST'])
+def edit_cart(id_cart):
+    if islogin():
+        id_cart = sToken.loads(id_cart,salt='id_cart',max_age=3600)
+        quantity = request.form['quantity']
+
+        # update_cart
+        update_cart = requests.put(url_cart,json={"id_cart":id_cart,"quantity":quantity})
+        if update_cart.status_code == 200:
+            res = update_cart.json()
+            if res['status'] == 'success':
+                flash("Cart Updated","success")
+                return redirect(url_for('cart'))
+            else:
+                flash("Opps Something Wrong!", "error")
+                return redirect(url_for('cart'))
+        else:
+            flash("Opps Server Error!","error")
+            return redirect(url_for('cart'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/checkout')
+def checkout():
+    if islogin():
+        # Make Checkout Request
+        req = requests.post(url_checkout,json={"id_user":session['id_user']})
+        print(req.status_code)
+        if req.status_code == 200:
+            res = req.json()
+            if res['status'] == "success":
+                return "{} Sukses. Silahkan Bayar ke rekening: {}".format(res['data']['transaction_number'],res['data']['va'])
+            else:
+                return res['message']
+        else:
+            return "Opps"
     else:
         return redirect(url_for('index'))
 

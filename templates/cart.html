@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link
+        rel="stylesheet"
+        href="{{url_for('static',filename='css/cart.css')}}"
+    />
+    <title>Cart</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+        a.edit:hover{
+            background-color: yellow;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="wrap cf">
+    <h1 class="projTitle">Seghoku<span>-Cart</span></h1>
+    <div class="heading cf">
+        <h1>My Cart</h1>
+        <a href="/" class="continue">Continue Shopping</a>
+    </div>
+    <div class="cart">
+        {% if qty == 0 %}
+        <h1 style="text-align: center; font-size: 50px;">Empty</h1>
+        {% else %}
+        <ul class="cartWrap">
+            {% for data in data_cart.data_cart %}
+            <li class="items odd">
+                <div class="infoWrap">
+                    <div class="cartSection">
+                        <h3>{{data.menu.nama_menu}}</h3>
+
+                        <p>
+                            {{data.quantity}} x
+                            Rp. {{data.menu.harga_menu}}
+                        </p>
+
+                        <p class="stockStatus">In Stock</p>
+                    </div>
+
+                    <div class="prodTotal cartSection">
+                        <p>Rp. {{data.total_harga}}</p>
+                    </div>
+                    <div class="cartSection removeWrap">
+                        <a href="#" data-toggle="modal" data-target="#edit_cart{{loop.index}}" class="remove edit" style="text-decoration: none; color: white;">E</a> 
+                        <a href="/remove_cart/{{data.id}}"style="text-decoration: none; color: white;" class="remove">x</a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <hr>
+    {% if qty > 0 %}
+    <div class="promoCode">
+        <label for="promo">Have A Promo Code?</label
+        ><input type="text" name="promo" placholder="Enter Code" />
+        <a href="#" class="btn"></a>
+    </div>
+
+    <div class="subtotal cf">
+        <ul>
+            <li class="totalRow">
+                <span class="label">Subtotal</span
+                ><span class="value">Rp. {{data_cart.grand_prize}}</span>
+            </li>
+
+            <li class="totalRow">
+                <span class="label">Shipping</span
+                ><span class="value">$5.00</span>
+            </li>
+
+            <li class="totalRow">
+                <span class="label">Tax</span><span class="value">$4.00</span>
+            </li>
+            <li class="totalRow final">
+                <span class="label">Total</span
+                ><span class="value">$44.00</span>
+            </li>
+            <li class="totalRow">
+                <a href="/checkout" class="btn continue">Checkout</a>
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<!-- modal edit cart -->
+{% for data in data_cart.data_cart %}
+<div class="modal fade" id="edit_cart{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Jumlah {{data.menu.nama_menu}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form class="needs-validation" novalidate="" method="POST" action="/edit_cart/{{data.id}}" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" value="{{data.quantity}}" class="form-control" required name="quantity" min="20">
+            <div class="invalid-feedback">
+              *Minimum: 20
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="{{url_for('static',filename='stisla/js/scripts.js')}}"></script>
+<!-- <script src="{{url_for('static',filename='js/cart.js')}}"></script> -->
+</body>
+</html>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Seghoku - {{mitra}}</title>
+    <title>Seghoku</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -39,7 +39,9 @@
         <div class="site-menu-inner" id="ftco-navbar">
           <ul class="list-unstyled">
             <li><a href="#section-home">Home</a></li>
+            <li><a href="#section-about">About Us</a></li>
             <li><a href="#section-menu">Our Menu</a></li>
+            <li><a href="#section-contact">Contact</a></li>
             {% if 'islogin' not in session %}
             <li><a href="/login">Login</a></li>
             {% else %}
@@ -72,12 +74,12 @@
       <div class="main-wrap " id="section-home">
 
         <div class="cover_1 overlay bg-light">
-          <div class="img_bg" style="background-image: url(../static/images/slider-1.jpg);" data-stellar-background-ratio="0.5">
+          <div class="img_bg" style="background-image: url(static/images/slider-1.jpg);" data-stellar-background-ratio="0.5">
             <div class="container">
               <div class="row align-items-center justify-content-center text-center">
                 <div class="col-md-10" data-aos="fade-up">
-                  <h2 class="heading mb-5">Welcome to Seghoku</h2>
-                  <p><a href="#section-menu" class="smoothscroll btn btn-outline-white px-5 py-3">Order A Meal</a></p>
+                  <h2 class="heading mb-5">{{session['nama_user']}}</h2>
+                  <p><a href="#section-menu" class="smoothscroll btn btn-outline-white px-5 py-3">Profile</a></p>
                 </div>
               </div>
             </div>
@@ -86,34 +88,26 @@
 
         <div class="section bg-light" id="section-menu" data-aos="fade-up">
           <div class="container">
-            <div class="row section-heading justify-content-center mb-5">
-              <div class="col-md-8 text-center">
-                <h2 class="heading mb-3">Menu</h2>
-                <span>{{mitra}}</span>
-                <p class="sub-heading mb-5"></p>  
-              </div>
-            </div>
             <div class="row justify-content-center">
-              {% for i in data_menu %}
               <div class="col-md-4">
                 <div class="card" style="margin-bottom: 15px;">
-                  <img src="{{i.foto_menu}}" class="card-img-top" style=" width: 100%; height: 300px; object-fit: cover;" alt="...">
                   <div class="card-body">
-                    <a href="/area/{{i.tenant.location.id}}">
-                    <span style="font-size: 12px; color: #54595F; text-transform: uppercase;"><i class="fas fa-map-marker-alt"></i> {{i.tenant.location.nama_location}}</span></a><br>
-                    <a href="/mitra/{{i.tenant.id}}" style="font-size: 14px; color: #FF5950; font-weight: normal;"> {{i.tenant.nama_toko}}</a><br>
-                    <h3><a href="#" data-toggle="modal" data-target="#beli_menu{{loop.index}}" style="color: black; font-weight: bold;">{{i.nama_menu}}</a></h3>
-                    
-                    <span style="font-size: 16px;">Rp. {{i.harga_menu}}</span>
+                    wawawa
                   </div>
                 </div>
               </div>
-              {% endfor %}
-              
+              <div class="col-md-8">
+                <div class="card" style="margin-bottom: 15px;">
+                  <div class="card-body">
+                    wawawa
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div> <!-- .section -->
-
+        
+        
         <footer class="ftco-footer">
           <div class="container">
             
@@ -141,36 +135,6 @@
       
     </div>
 
-    <!-- Modal -->
-    {% for data in data_menu %}
-    <div class="modal fade" id="beli_menu{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Beli {{data.nama_menu}}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form class="needs-validation" novalidate="" method="POST" action="/add_cart/{{data.id}}" enctype="multipart/form-data">
-            <div class="modal-body">
-              <div class="form-group">
-                <label>Quantity</label>
-                <input type="number" class="form-control" required name="quantity" min="20">
-                <div class="invalid-feedback">
-                  *Minimum: 20
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-primary">Submit</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-
     <!-- loader -->
     <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#ff7a5c"/></svg></div>
 
@@ -190,5 +154,6 @@
     <script src="{{url_for('static',filename='js/aos.js')}}"></script>
 
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
+    <script src="{{url_for('static',filename='stisla/js/scripts.js')}}"></script>
   </body>
 </html>
